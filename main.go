@@ -9,14 +9,14 @@ import (
 	"strings"
 )
 
-func readJSON(filepath string) ([]map[string]string, error) {
+func readJSON(filepath string) ([]map[string]any, error) {
 	f, err := os.Open(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("json file does not exist: %s", err)
 	}
 	defer f.Close()
 
-	var result []map[string]string
+	var result []map[string]any
 	if err := json.NewDecoder(f).Decode(&result); err != nil {
 		return nil, fmt.Errorf("error while decoding json: %s", err)
 	}
@@ -28,8 +28,8 @@ func readJSON(filepath string) ([]map[string]string, error) {
 	return result, nil
 }
 
-func writeCSV(data []map[string]string, filepath string) error {
-	values := make([][]string, 0, len(data))
+func writeCSV(data []map[string]any, filepath string) error {
+	records := make([][]string, 0, len(data))
 	keys := make([]string, 0, len(data[0]))
 
 	for k := range data[0] {
@@ -37,11 +37,12 @@ func writeCSV(data []map[string]string, filepath string) error {
 	}
 
 	for _, v := range data {
-		value := []string{}
+		values := []string{}
 		for _, k := range keys {
-			value = append(value, v[k])
+			value := fmt.Sprintf("%v", v[k])
+			values = append(values, value)
 		}
-		values = append(values, value)
+		records = append(records, values)
 	}
 
 	fn, err := os.Create(filepath)
@@ -56,7 +57,7 @@ func writeCSV(data []map[string]string, filepath string) error {
 		return fmt.Errorf("error writing header: %s", err)
 	}
 
-	if err = w.WriteAll(values); err != nil {
+	if err = w.WriteAll(records); err != nil {
 		return fmt.Errorf("error writing records: %s", err)
 	}
 
