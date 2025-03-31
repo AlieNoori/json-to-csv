@@ -4,7 +4,13 @@ A simple command-line tool written in Go that converts JSON files to CSV format.
 
 ## Overview
 
-This tool reads a JSON file containing an array of objects with string values and converts it to a CSV file with matching headers and data.
+This tool reads a JSON file containing an array of objects and converts it to a CSV file with matching headers and data. It handles various data types (strings, numbers, booleans) and automatically converts them to appropriate string representations in the CSV output.
+
+## Features
+
+- Converts JSON arrays of objects to CSV format
+- Preserves field order in the output CSV
+- Simple command-line interface
 
 ## Requirements
 
@@ -41,20 +47,22 @@ The program will generate a CSV file with the same name but a `.csv` extension (
 
 ## Input Format
 
-The JSON file should contain an array of objects where all values are strings.
+The JSON file should contain an array of objects. The program supports various data types and will convert them to appropriate string representations.
 
 Example input (data.json):
 ```json
 [
   {
     "name": "John",
-    "age": "30",
-    "city": "New York"
+    "age": 30,
+    "city": "New York",
+    "active": true
   },
   {
     "name": "Jane",
-    "age": "25",
-    "city": "San Francisco"
+    "age": 25,
+    "city": "San Francisco",
+    "active": false
   }
 ]
 ```
@@ -63,12 +71,11 @@ Example input (data.json):
 
 The program will create a CSV file with:
 - A header row containing all the keys from the JSON objects
-- Data rows containing the corresponding values
+- Data rows containing the corresponding values converted to strings
 
 Example output (data.csv):
 ```
-name,age,city
-John,30,New York
-Jane,25,San Francisco
+name,age,city,active
+John,30,New York,true
+Jane,25,San Francisco,false
 ```
-
